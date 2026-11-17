@@ -1,0 +1,20 @@
+# Bitácora de Desarrollo y Pruebas — Proyecto LabMotion
+
+Registro de hitos técnicos, validación experimental y distribución de tareas del equipo durante el desarrollo del MVP.
+
+---
+
+## Semana 11 – 12: Diseño Conceptual, Hardware y Arquitectura Web
+* **Isidora González (Product Owner / Científica):** Definición de las ecuaciones del plano inclinado ($\mu_s = \tan \theta_c$ y $\mu_k = \tan \theta - \frac{a}{g \cos \theta}$) y protocolo de 5 repeticiones por superficie.
+* **Josefa Mondaca (Hardware / Instrumentación):** Diseño de la rampa articulada ($0^\circ - 45^\circ$), selección de superficies de prueba (Madera, Lija, Goma EVA) y maquetación responsiva.
+* **Rashmi Abdelrahman (Software / Datos):** Estructuración inicial de `index.html`, lectura de sensores móviles (`DeviceOrientation` y `DeviceMotion`) y modo simulador.
+* **Alejandro Prado (Pedagógico / Documentación):** Diseño de la secuencia didáctica basada en indagación (Predicción → Experimentación → Análisis).
+
+## Semana 13: Implementación de Filtros, Gráficos y Despliegue
+* **Rashmi Abdelrahman:** Implementación de filtro de promedio móvil para estabilizar ruido del acelerómetro, integración de gráficos en tiempo real y exportación a CSV.
+* **Josefa Mondaca:** Ajustes de interfaz táctil móvil, calibración a $0^\circ$ y pruebas de ergonomía sobre la rampa física.
+* **Isidora González:** Ejecución de ensayos piloto sobre madera, lija y goma EVA verificando la coherencia física ($\mu_s > \mu_k$).
+* **Alejandro Prado:** Redacción de la Guía del Estudiante (`docs/guia_estudiante.md`) y manual visual de usuario.
+
+## Semana 14: Validación Final, Trazabilidad y Entrega
+* **Equipo Completo:** Despliegue productivo en Netlify (`https://fabulous-quokka-d2b4e9.netlify.app/`), consolidación del repositorio público en GitHub (`README.md`, `docs/`, `bitacora/`) y redacción del Informe Técnico Final.
