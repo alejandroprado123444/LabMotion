@@ -1,1 +1,883 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Guía Tutorial LabMotion — Aprendiendo Roce desde Cero</title>
+  <style>
+    :root {
+      --bg-page: #dce8ee;
+      --bg-card: #ffffff;
+      --bg-panel: #f1f6f9;
+      --navy: #143642;
+      --teal: #2a6f7f;
+      --teal-light: #e3f1f4;
+      --amber: #e09f3e;
+      --amber-light: #fdf4e4;
+      --text-main: #1b2a32;
+      --text-muted: #526773;
+      --border: #c5d8e1;
+      --radius: 14px;
+    }
 
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      line-height: 1.5;
+      padding: 20px 14px 48px;
+    }
+
+    .container {
+      max-width: 1020px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    header {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--teal) 100%);
+      color: #fff;
+      padding: 28px 24px;
+      border-radius: var(--radius);
+      text-align: center;
+      box-shadow: 0 8px 24px rgba(20, 54, 66, 0.16);
+      margin-bottom: 22px;
+    }
+
+    header .badge {
+      display: inline-block;
+      background: var(--amber);
+      color: var(--navy);
+      font-weight: 800;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 999px;
+      margin-bottom: 10px;
+    }
+
+    header h1 {
+      font-size: clamp(1.5rem, 3.5vw, 2.2rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 6px;
+    }
+
+    header p {
+      font-size: 1.02rem;
+      color: #d9edf2;
+      max-width: 680px;
+      margin: 0 auto 14px;
+    }
+
+    .header-actions {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn-app {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #ffffff;
+      color: var(--navy);
+      font-weight: 700;
+      text-decoration: none;
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-size: 0.92rem;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .btn-app:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
+    }
+
+    /* Concept Cards */
+    .concepts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+
+    .concept-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-top: 5px solid var(--teal);
+      border-radius: var(--radius);
+      padding: 18px;
+      box-shadow: 0 4px 12px rgba(20, 54, 66, 0.05);
+    }
+
+    .concept-card.amber {
+      border-top-color: var(--amber);
+    }
+
+    .concept-card h2 {
+      font-size: 1rem;
+      color: var(--navy);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      margin-bottom: 8px;
+    }
+
+    .concept-card p {
+      font-size: 0.94rem;
+      color: var(--text-main);
+    }
+
+    .pill-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      font-size: 0.84rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 8px;
+      background: var(--teal-light);
+      color: var(--navy);
+    }
+
+    .pill.amber {
+      background: var(--amber-light);
+      color: #8a5609;
+    }
+
+    /* Section Card */
+    .section-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px;
+      margin-bottom: 22px;
+      box-shadow: 0 4px 14px rgba(20, 54, 66, 0.06);
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--navy);
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--teal-light);
+    }
+
+    .section-title span.num {
+      background: var(--navy);
+      color: #fff;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.95rem;
+      flex-shrink: 0;
+    }
+
+    /* Interactive Ramp + Calculator */
+    .sim-layout {
+      display: grid;
+      grid-template-columns: 1.15fr 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    @media (max-width: 780px) {
+      .sim-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .ramp-box {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+    }
+
+    svg#rampSvg {
+      width: 100%;
+      height: auto;
+      display: block;
+      margin-bottom: 12px;
+    }
+
+    .slider-group {
+      margin-bottom: 12px;
+    }
+
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--navy);
+      margin-bottom: 4px;
+    }
+
+    .slider-header span.val {
+      color: var(--teal);
+      font-family: monospace;
+      font-size: 1.05rem;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--amber);
+      cursor: pointer;
+    }
+
+    .preset-bar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .btn-preset {
+      background: var(--teal-light);
+      color: var(--navy);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-preset:hover {
+      background: var(--teal);
+      color: #fff;
+    }
+
+    .formulas-box {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .formula-card {
+      background: var(--bg-panel);
+      border-left: 5px solid var(--teal);
+      border-radius: 10px;
+      padding: 14px;
+    }
+
+    .formula-card.dynamic {
+      border-left-color: var(--amber);
+    }
+
+    .formula-card h3 {
+      font-size: 0.95rem;
+      color: var(--navy);
+      margin-bottom: 4px;
+    }
+
+    .formula-math {
+      font-family: 'Cambria Math', 'Times New Roman', serif;
+      font-size: 1.08rem;
+      font-weight: 700;
+      color: var(--teal);
+      margin-bottom: 6px;
+    }
+
+    .formula-card.dynamic .formula-math {
+      color: #9e6208;
+    }
+
+    .calc-live {
+      font-size: 0.9rem;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 10px;
+    }
+
+    .calc-result {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--navy);
+      margin-top: 4px;
+    }
+
+    .status-alert {
+      font-size: 0.85rem;
+      font-weight: 700;
+      padding: 8px 12px;
+      border-radius: 8px;
+      background: var(--teal-light);
+      color: var(--navy);
+    }
+
+    .status-alert.warn {
+      background: #fde8e8;
+      color: #9b1c1c;
+    }
+
+    /* Steps Grid */
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(165px, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .step-item {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px;
+      position: relative;
+    }
+
+    .step-num {
+      display: inline-block;
+      background: var(--amber);
+      color: var(--navy);
+      font-weight: 800;
+      font-size: 0.8rem;
+      padding: 2px 8px;
+      border-radius: 6px;
+      margin-bottom: 6px;
+    }
+
+    .step-item h4 {
+      font-size: 0.92rem;
+      color: var(--navy);
+      margin-bottom: 4px;
+    }
+
+    .step-item p {
+      font-size: 0.84rem;
+      color: var(--text-muted);
+    }
+
+    /* Mobile section */
+    .mobile-layout {
+      display: grid;
+      grid-template-columns: 270px 1fr;
+      gap: 20px;
+      align-items: center;
+    }
+
+    @media (max-width: 720px) {
+      .mobile-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .phone-mockup {
+      background: #111c24;
+      color: #fff;
+      border-radius: 26px;
+      padding: 18px 16px;
+      border: 4px solid #2b3f4c;
+      box-shadow: 0 10px 24px rgba(17, 28, 36, 0.22);
+      max-width: 270px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .phone-notch {
+      width: 70px;
+      height: 6px;
+      background: #354c5a;
+      border-radius: 99px;
+      margin: 0 auto 14px;
+    }
+
+    .phone-title {
+      font-weight: 800;
+      font-size: 1.05rem;
+      text-align: center;
+      margin-bottom: 10px;
+      color: #7bdff2;
+    }
+
+    .phone-btn {
+      background: var(--teal);
+      color: #fff;
+      text-align: center;
+      padding: 10px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.86rem;
+      margin-bottom: 8px;
+    }
+
+    .phone-status {
+      font-size: 0.78rem;
+      color: #a9c4d0;
+      text-align: center;
+      margin-bottom: 12px;
+    }
+
+    .phone-readings {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .reading-box {
+      background: #1b2d38;
+      border-radius: 10px;
+      padding: 10px 8px;
+      text-align: center;
+    }
+
+    .reading-box small {
+      display: block;
+      font-size: 0.72rem;
+      color: #93b3c2;
+    }
+
+    .reading-box strong {
+      font-size: 1.05rem;
+      color: var(--amber);
+    }
+
+    /* Graph section */
+    .graph-layout {
+      display: grid;
+      grid-template-columns: 1.3fr 1fr;
+      gap: 20px;
+      align-items: center;
+    }
+
+    @media (max-width: 780px) {
+      .graph-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .graph-box {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+    }
+
+    .legend {
+      display: flex;
+      gap: 18px;
+      justify-content: center;
+      margin-top: 8px;
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+
+    .legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dot {
+      width: 14px;
+      height: 5px;
+      border-radius: 3px;
+      display: inline-block;
+    }
+
+    .summary-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .mini-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px;
+    }
+
+    .mini-card h4 {
+      font-size: 0.92rem;
+      color: var(--navy);
+      margin-bottom: 3px;
+    }
+
+    .mini-card p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* Footer banner */
+    footer.cta-banner {
+      background: var(--navy);
+      color: #fff;
+      text-align: center;
+      padding: 20px;
+      border-radius: var(--radius);
+      font-weight: 800;
+      font-size: 1.05rem;
+      letter-spacing: 0.02em;
+    }
+
+    footer.cta-banner span {
+      color: var(--amber);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- HEADER -->
+    <header>
+      <div class="badge">Guía Tutorial · Física Experimental</div>
+      <h1>LABMOTION: APRENDIENDO ROCE DESDE CERO</h1>
+      <p>Laboratorio de Roce Virtual para medir el coeficiente estático (<strong>&mu;<sub>s</sub></strong>) y dinámico (<strong>&mu;<sub>k</sub></strong>) sobre un plano inclinado.</p>
+      <div class="header-actions">
+        <a class="btn-app" href="https://fabulous-quokka-d2b4e9.netlify.app/" target="_blank" rel="noopener">
+          Abrir Aplicación LabMotion &rarr;
+        </a>
+      </div>
+    </header>
+
+    <!-- CONCEPTOS CLAVE -->
+    <section class="concepts-grid">
+      <div class="concept-card">
+        <h2>¿Qué es el roce?</h2>
+        <p>Es la fuerza que se opone al movimiento entre dos superficies que se tocan (por ejemplo, un bloque sobre madera, lija o goma EVA).</p>
+      </div>
+      <div class="concept-card amber">
+        <h2>¿Qué es &mu; (Mu)?</h2>
+        <p>Es el <strong>coeficiente de roce</strong>: un número sin unidades que indica qué tan rugoso es el contacto. Mientras mayor es <strong>&mu;</strong>, más roce hay.</p>
+      </div>
+      <div class="concept-card">
+        <h2>&mu;<sub>s</sub> vs. &mu;<sub>k</sub></h2>
+        <p><strong>&mu;<sub>s</sub></strong> mide lo que cuesta arrancar el movimiento; <strong>&mu;<sub>k</sub></strong> mide lo que cuesta seguir moviéndose.</p>
+        <div class="pill-row">
+          <span class="pill">Regla física: &mu;<sub>s</sub> &gt; &mu;<sub>k</sub></span>
+          <span class="pill amber">g = 9.8 m/s&sup2;</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 1: MODO SIMULADOR MANUAL (PC) -->
+    <section class="section-card">
+      <div class="section-title">
+        <span class="num">1</span>
+        <span>Modo Simulador Manual (PC) + Calculadora Interactiva</span>
+      </div>
+
+      <div class="sim-layout">
+        <!-- Rampa interactiva SVG -->
+        <div class="ramp-box">
+          <svg id="rampSvg" viewBox="0 0 380 200" aria-label="Plano inclinado interactivo">
+            <!-- Base horizontal -->
+            <line x1="30" y1="175" x2="340" y2="175" stroke="#143642" stroke-width="3" stroke-linecap="round" />
+            <!-- Triángulo de la rampa (actualizado por JS) -->
+            <polygon id="rampPoly" points="340,175 60,175 60,60" fill="#b9ced8" stroke="#143642" stroke-width="2.5" stroke-linejoin="round" />
+            <!-- Arco de ángulo -->
+            <path id="angleArc" d="M 295 175 A 45 45 0 0 0 299 156" fill="none" stroke="#e09f3e" stroke-width="3" />
+            <text id="angleLabel" x="272" y="166" font-size="14" font-weight="800" fill="#143642">&theta;</text>
+            <!-- Bloque y vector de movimiento -->
+            <g id="blockGroup">
+              <rect x="-26" y="-32" width="52" height="32" rx="5" fill="#e09f3e" stroke="#143642" stroke-width="2.5" />
+              <line x1="-16" y1="-22" x2="16" y2="-22" stroke="#9e6208" stroke-width="2" />
+              <line x1="-16" y1="-15" x2="16" y2="-15" stroke="#9e6208" stroke-width="2" />
+              <line x1="-16" y1="-8" x2="16" y2="-8" stroke="#9e6208" stroke-width="2" />
+              <!-- Flecha descenso -->
+              <line x1="34" y1="-16" x2="76" y2="-16" stroke="#143642" stroke-width="3" />
+              <polygon points="76,-21 86,-16 76,-11" fill="#143642" />
+            </g>
+          </svg>
+
+          <div class="slider-group">
+            <div class="slider-header">
+              <label for="thetaSlider">Ángulo de inclinación (&theta;):</label>
+              <span class="val" id="thetaVal">24.5&deg;</span>
+            </div>
+            <input type="range" id="thetaSlider" min="5" max="60" step="0.5" value="24.5" />
+          </div>
+
+          <div class="slider-group">
+            <div class="slider-header">
+              <label for="accelSlider">Aceleración de descenso (a):</label>
+              <span class="val" id="accelVal">1.20 m/s&sup2;</span>
+            </div>
+            <input type="range" id="accelSlider" min="0" max="6" step="0.1" value="1.20" />
+          </div>
+
+          <div class="preset-bar">
+            <button type="button" class="btn-preset" onclick="setSample(24.5, 1.20)">Muestra Guía (24.5&deg; / 1.20 m/s&sup2;)</button>
+            <button type="button" class="btn-preset" onclick="setSample(31.3, 0.20)">Ensayo Madera (31.3&deg; / 0.20 m/s&sup2;)</button>
+          </div>
+        </div>
+
+        <!-- Fórmulas y cálculo en tiempo real -->
+        <div class="formulas-box">
+          <div class="formula-card">
+            <h3>Cálculo de Roce Estático (&mu;<sub>s</sub>)</h3>
+            <div class="formula-math">&mu;<sub>s</sub> = tan(&theta;<sub>crítico</sub>)</div>
+            <div class="calc-live">
+              <div id="staticStep">tan(24.5&deg;) &approx; 0.456</div>
+              <div class="calc-result" id="staticRes">&mu;<sub>s</sub> = 0.456</div>
+            </div>
+          </div>
+
+          <div class="formula-card dynamic">
+            <h3>Cálculo de Roce Dinámico (&mu;<sub>k</sub>)</h3>
+            <div class="formula-math">&mu;<sub>k</sub> = tan(&theta;) &minus; a / (g &middot; cos &theta;)</div>
+            <div class="calc-live">
+              <div id="dynamicStep">tan(24.5&deg;) &minus; 1.20 / (9.8 &middot; cos 24.5&deg;)</div>
+              <div class="calc-result" id="dynamicRes">&mu;<sub>k</sub> = 0.321</div>
+            </div>
+          </div>
+
+          <div id="physicsCheck" class="status-alert">
+            &#10004; Condición física válida: &mu;<sub>k</sub> (0.321) &lt; &mu;<sub>s</sub> (0.456)
+          </div>
+        </div>
+      </div>
+
+      <!-- 5 Pasos PC -->
+      <div class="steps-grid">
+        <div class="step-item">
+          <span class="step-num">Paso 1</span>
+          <h4>Abre el Simulador</h4>
+          <p>Entra al link de LabMotion y selecciona la pestaña <strong>Modo Simulador</strong>.</p>
+        </div>
+        <div class="step-item">
+          <span class="step-num">Paso 2</span>
+          <h4>Elige Superficie</h4>
+          <p>Selecciona <strong>Madera</strong>, <strong>Lija</strong> o <strong>Goma EVA</strong>.</p>
+        </div>
+        <div class="step-item">
+          <span class="step-num">Paso 3</span>
+          <h4>Calibra e Inicia</h4>
+          <p>Toca <strong>Calibrar a 0&deg;</strong> y luego <strong>Iniciar Captura</strong>.</p>
+        </div>
+        <div class="step-item">
+          <span class="step-num">Paso 4</span>
+          <h4>Ajusta &theta; y a</h4>
+          <p>Mueve <strong>&theta;</strong> (de 0.5&deg; en 0.5&deg;) y <strong>a</strong> (de 0.10 en 0.10).</p>
+        </div>
+        <div class="step-item">
+          <span class="step-num">Paso 5</span>
+          <h4>Exporta CSV</h4>
+          <p>Finaliza la medición y descarga tus datos en formato <strong>CSV</strong>.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 2: MODO SENSORES DEL MÓVIL -->
+    <section class="section-card">
+      <div class="section-title">
+        <span class="num">2</span>
+        <span>Modo Sensores del Móvil (Celular en Rampa Real)</span>
+      </div>
+
+      <div class="mobile-layout">
+        <div class="phone-mockup">
+          <div class="phone-notch"></div>
+          <div class="phone-title">LabMotion</div>
+          <div class="phone-btn">Conectar Sensores del Teléfono</div>
+          <div class="phone-status">Estado: Sensores conectados</div>
+          <div class="phone-readings">
+            <div class="reading-box">
+              <small>Giroscopio (&theta;)</small>
+              <strong>24.5&deg;</strong>
+            </div>
+            <div class="reading-box">
+              <small>Acelerómetro (a)</small>
+              <strong>1.20 m/s&sup2;</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="steps-grid" style="margin-top: 0;">
+          <div class="step-item">
+            <span class="step-num">1. Conecta</span>
+            <h4>Permiso de Sensores</h4>
+            <p>Toca <strong>Conectar Sensores del Teléfono</strong> y acepta el permiso del navegador.</p>
+          </div>
+          <div class="step-item">
+            <span class="step-num">2. Elige Superficie</span>
+            <h4>Material de Prueba</h4>
+            <p>Selecciona <strong>Madera</strong>, <strong>Lija</strong> o <strong>Goma EVA</strong> en la rampa.</p>
+          </div>
+          <div class="step-item">
+            <span class="step-num">3. Calibra</span>
+            <h4>Cero Horizontal</h4>
+            <p>Con el celular plano sobre la base sin inclinar, toca <strong>Calibrar a 0&deg;</strong>.</p>
+          </div>
+          <div class="step-item">
+            <span class="step-num">4. Captura</span>
+            <h4>Eleva Despacio</h4>
+            <p>Toca <strong>Iniciar Captura</strong> y levanta la rampa lentamente hasta que deslice.</p>
+          </div>
+          <div class="step-item">
+            <span class="step-num">5. Finaliza</span>
+            <h4>Lee &mu;<sub>s</sub>, &mu;<sub>k</sub> y Exporta</h4>
+            <p>Cuando <strong>a</strong> sea estable, finaliza la medición y exporta el registro CSV.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 3: GRÁFICO DINÁMICO Y RESULTADOS -->
+    <section class="section-card">
+      <div class="section-title">
+        <span class="num">3</span>
+        <span>Cómo Interpretar el Gráfico Dinámico y Resultados</span>
+      </div>
+
+      <div class="graph-layout">
+        <div class="graph-box">
+          <svg viewBox="0 0 460 220" width="100%" aria-label="Ejemplo de gráfico dinámico de sensores">
+            <!-- Ejes -->
+            <line x1="42" y1="22" x2="42" y2="185" stroke="#143642" stroke-width="2.5" />
+            <line x1="42" y1="185" x2="440" y2="185" stroke="#143642" stroke-width="2.5" />
+            <text x="14" y="16" font-size="11" font-weight="700" fill="#143642">&theta; (&deg;) y a (m/s&sup2;)</text>
+            <text x="385" y="205" font-size="11" font-weight="700" fill="#143642">tiempo &rarr;</text>
+
+            <!-- Línea punteada ángulo crítico -->
+            <line x1="255" y1="28" x2="255" y2="185" stroke="#143642" stroke-width="1.8" stroke-dasharray="5,4" />
+
+            <!-- Curva ángulo theta -->
+            <polyline points="44,180 255,68 430,68" fill="none" stroke="#2a6f7f" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" />
+
+            <!-- Curva aceleración a -->
+            <polyline points="44,182 252,182 268,125 430,125" fill="none" stroke="#e09f3e" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" />
+
+            <!-- Punto crítico -->
+            <circle cx="255" cy="68" r="7" fill="#143642" />
+
+            <!-- Etiquetas 1, 2, 3 -->
+            <text x="58" y="102" font-size="12" font-weight="800" fill="#143642">&#9312; &theta; sube de a poco</text>
+            <text x="266" y="42" font-size="12" font-weight="800" fill="#143642">&#9313; ÁNGULO CRÍTICO</text>
+            <text x="266" y="57" font-size="11" font-weight="600" fill="#526773">empieza a deslizar</text>
+            <text x="275" y="152" font-size="12" font-weight="800" fill="#8a5609">&#9314; a deja de ser 0</text>
+          </svg>
+
+          <div class="legend">
+            <span><i class="dot" style="background:#2a6f7f;"></i> &theta; ángulo</span>
+            <span><i class="dot" style="background:#e09f3e;"></i> a aceleración</span>
+          </div>
+        </div>
+
+        <div class="summary-cards">
+          <div class="mini-card">
+            <h4>¿Qué muestra el gráfico?</h4>
+            <p>Dos curvas en vivo: <strong>&theta;</strong> (ángulo) y <strong>a</strong> (aceleración) contra el tiempo. Antes de capturar dice <em>"En espera"</em>.</p>
+          </div>
+          <div class="mini-card">
+            <h4>¿Cómo leer &mu;<sub>s</sub> y &mu;<sub>k</sub>?</h4>
+            <p>Mira el instante exacto en que <strong>a</strong> deja de ser 0: el ángulo <strong>&theta;</strong> de ese punto es tu ángulo crítico (<strong>&mu;<sub>s</sub></strong>). Con <strong>a</strong> estable obtienes <strong>&mu;<sub>k</sub></strong>.</p>
+          </div>
+          <div class="mini-card">
+            <h4>Exportar Registro CSV</h4>
+            <p>Descarga la tabla completa con tiempo, ángulo, aceleración y coeficientes para analizarla en Excel o Google Sheets.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="cta-banner">
+      MÁS ÁNGULO PARA DESLIZAR = MÁS ROCE &nbsp;&bull;&nbsp; <span>¡PRUEBA LAS 3 SUPERFICIES Y COMPARA!</span>
+    </footer>
+  </div>
+
+  <script>
+    const thetaSlider = document.getElementById('thetaSlider');
+    const accelSlider = document.getElementById('accelSlider');
+    const thetaVal = document.getElementById('thetaVal');
+    const accelVal = document.getElementById('accelVal');
+    const staticStep = document.getElementById('staticStep');
+    const staticRes = document.getElementById('staticRes');
+    const dynamicStep = document.getElementById('dynamicStep');
+    const dynamicRes = document.getElementById('dynamicRes');
+    const physicsCheck = document.getElementById('physicsCheck');
+    const rampPoly = document.getElementById('rampPoly');
+    const blockGroup = document.getElementById('blockGroup');
+    const angleArc = document.getElementById('angleArc');
+    const angleLabel = document.getElementById('angleLabel');
+
+    function updateSimulation() {
+      const deg = parseFloat(thetaSlider.value);
+      const a = parseFloat(accelSlider.value);
+      const g = 9.8;
+      const rad = (deg * Math.PI) / 180;
+
+      thetaVal.textContent = deg.toFixed(1) + '°';
+      accelVal.innerHTML = a.toFixed(2) + ' m/s&sup2;';
+
+      const muS = Math.tan(rad);
+      const muK = Math.tan(rad) - a / (g * Math.cos(rad));
+
+      staticStep.textContent = `tan(${deg.toFixed(1)}°) ≈ ${muS.toFixed(3)}`;
+      staticRes.innerHTML = `&mu;<sub>s</sub> = ${muS.toFixed(3)}`;
+
+      dynamicStep.textContent = `tan(${deg.toFixed(1)}°) − ${a.toFixed(2)} / (9.8 · cos ${deg.toFixed(1)}°)`;
+      dynamicRes.innerHTML = `&mu;<sub>k</sub> = ${muK.toFixed(3)}`;
+
+      if (muK < 0) {
+        physicsCheck.className = 'status-alert warn';
+        physicsCheck.innerHTML = `&#9888; Aceleración muy alta para ${deg.toFixed(1)}° (&mu;<sub>k</sub> &lt; 0). Sube &theta; o baja a.`;
+      } else if (muK < muS) {
+        physicsCheck.className = 'status-alert';
+        physicsCheck.innerHTML = `&#10004; Condición física válida: &mu;<sub>k</sub> (${muK.toFixed(3)}) &lt; &mu;<sub>s</sub> (${muS.toFixed(3)})`;
+      } else {
+        physicsCheck.className = 'status-alert warn';
+        physicsCheck.innerHTML = `&#9888; En reposo (a = 0): &mu;<sub>k</sub> = &mu;<sub>s</sub> (${muS.toFixed(3)}). Aumenta a para simular deslizamiento.`;
+      }
+
+      // Actualizar geometría SVG de la rampa
+      const baseRightX = 340;
+      const baseLeftX = 60;
+      const baseY = 175;
+      const baseLen = baseRightX - baseLeftX;
+      const height = Math.min(155, Math.tan(rad) * baseLen);
+      const topY = baseY - height;
+
+      rampPoly.setAttribute('points', `${baseRightX},${baseY} ${baseLeftX},${baseY} ${baseLeftX},${topY.toFixed(1)}`);
+
+      // Posicionar bloque a mitad de la hipotenusa
+      const midX = (baseLeftX + baseRightX) / 2;
+      const midY = (topY + baseY) / 2;
+      const slopeDeg = (Math.atan2(baseY - topY, baseRightX - baseLeftX) * 180) / Math.PI;
+      blockGroup.setAttribute('transform', `translate(${midX.toFixed(1)}, ${midY.toFixed(1)}) rotate(${slopeDeg.toFixed(2)})`);
+
+      // Arco de ángulo en esquina inferior derecha
+      const r = 46;
+      const slopeRad = (slopeDeg * Math.PI) / 180;
+      const arcX = baseRightX - r * Math.cos(slopeRad);
+      const arcY = baseY - r * Math.sin(slopeRad);
+      angleArc.setAttribute('d', `M ${baseRightX - r} ${baseY} A ${r} ${r} 0 0 1 ${arcX.toFixed(1)} ${arcY.toFixed(1)}`);
+      angleLabel.setAttribute('x', (baseRightX - 66).toString());
+      angleLabel.setAttribute('y', (baseY - 8).toString());
+    }
+
+    function setSample(deg, a) {
+      thetaSlider.value = deg;
+      accelSlider.value = a;
+      updateSimulation();
+    }
+
+    thetaSlider.addEventListener('input', updateSimulation);
+    accelSlider.addEventListener('input', updateSimulation);
+    updateSimulation();
+  </script>
+</body>
+</html>
